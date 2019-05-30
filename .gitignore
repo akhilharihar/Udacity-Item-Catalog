@@ -18,6 +18,7 @@ node_modules/
 .vscode
 .env
 static/
+public/
 *.db
 .env
 
@@ -28,3 +29,7 @@ yarn-error.log
 *.pem
 *.key
 *.cert
+
+*.log
+*.pid
+*.lock
