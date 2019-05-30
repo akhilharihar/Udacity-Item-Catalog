@@ -11,6 +11,8 @@ class BaseConfig:
     """
     SECRET_KEY = os.getenv('APP_KEY')
     SERVER_NAME = os.getenv('SERVER_NAME')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DB_URI')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class ProductionConfig:
