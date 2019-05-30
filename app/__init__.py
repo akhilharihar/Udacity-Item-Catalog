@@ -1,5 +1,6 @@
 from .config.flask import Application
 from settings import BaseConfig, ProductionConfig, DevelopmentConfig
+from .database import db
 
 
 def create_app():
@@ -18,9 +19,17 @@ def create_app():
     else:
         app.config.from_object(DevelopmentConfig)
 
+    register_extensions(app)
     app.add_url_rule('/', 'index', index)
 
     return app
+
+
+def register_extensions(flask_instance):
+    """
+    Register flask extensions.
+    """
+    db.init_app(flask_instance)
 
 
 def index():
