@@ -10,6 +10,7 @@ class BaseConfig:
     Default flask instance configuration.
     """
     SECRET_KEY = os.getenv('APP_KEY')
+    SERVER_NAME = os.getenv('SERVER_NAME')
 
 
 class ProductionConfig:
