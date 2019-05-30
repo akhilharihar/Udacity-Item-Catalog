@@ -33,3 +33,5 @@ yarn-error.log
 *.log
 *.pid
 *.lock
+
+*.conf
