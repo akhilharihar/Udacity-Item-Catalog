@@ -6,9 +6,6 @@ from .csrf import csrf
 from .jinja_filters import installed_filters
 
 
-__all__ = ['Application']
-
-
 class Request(Req):
     """
     Extends Flask Request class.
