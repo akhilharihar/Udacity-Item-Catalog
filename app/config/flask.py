@@ -4,6 +4,7 @@ from werkzeug.utils import cached_property
 from werkzeug.datastructures import MultiDict, CombinedMultiDict
 from .csrf import csrf
 from .jinja_filters import installed_filters
+from .errors import http_error_status_codes, BaseError
 
 
 class Request(Req):
@@ -57,6 +58,11 @@ class Application(Flask, FlaskHelpers):
         """Register jinja filters"""
         for filter_name, func in installed_filters.items():
             self.jinja_env.filters[filter_name] = func
+
+        """Register custom error handlers for flask application."""
+        error_fn = BaseError()
+        for error_code in http_error_status_codes:
+            self.register_error_handler(error_code, error_fn)
 
 
 class Blueprint(BP, FlaskHelpers):

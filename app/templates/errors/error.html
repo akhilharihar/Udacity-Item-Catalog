@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Oops - {{ error['code'] }} error</title>
+	<style>
+		body {
+			margin: 0px;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+			background-color: #f5f7fb;
+			color: #495057;
+		}
+
+		h1 {
+			margin-bottom: 0px;
+		}
+
+		p {
+			margin-top: 5px;
+		}
+
+		.container {
+			height: 100vh;
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+		}
+
+		.icon {
+			box-sizing: border-box;
+			display: inline-block;
+			font-size: inherit;
+			font-style: normal;
+			height: 1em;
+			position: relative;
+			text-indent: -9999px;
+			vertical-align: middle;
+			width: 1em;
+		}
+
+		.icon::before,
+		.icon::after {
+			content: "";
+			display: block;
+			left: 50%;
+			position: absolute;
+			top: 50%;
+			transform: translate(-50%, -50%);
+		}
+
+		.icon-back::before {
+			border: .1rem solid currentColor;
+			border-bottom: 0;
+			border-right: 0;
+			height: .65em;
+			width: .65em;
+			transform: translate(-50%, -50%) rotate(-45deg);
+		}
+
+		.icon-back::after {
+			background: currentColor;
+			height: .1rem;
+			width: .8em;
+			left: 55%;
+		}
+
+		.btn {
+			display: inline-block;
+			font-weight: 500;
+			color: #495057;
+			text-align: center;
+			vertical-align: middle;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			background-color: transparent;
+			border: 1px solid transparent;
+			padding: 0.375rem 0.75rem;
+			font-size: 0.8125rem;
+			line-height: 1.84615385;
+			border-radius: 3px;
+			transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+			cursor: pointer;
+			letter-spacing: .03em;
+			min-width: 2.375rem;
+		}
+
+		.btn-primary {
+			color: #fff;
+			background-color: #467fcf;
+			border-color: #467fcf;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<h1>{{ error['code'] }}</h1>
+		<p>{{ error['message'] }}</p>
+		<button class="btn btn-primary" onclick="javascript:history.back()">
+			<i class="icon icon-back"></i>
+			Go back
+		</button>
+	</div>
+</body>
+
+</html>
