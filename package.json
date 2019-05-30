@@ -1,0 +1,26 @@
+{
+  "name": "catalog-listing",
+  "version": "0.0.1",
+  "description": "Web application to that providers a list of items within a variety of categories.",
+  "scripts": {
+    "dev": "npm run development",
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "npm run development -- --watch",
+    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod": "npm run production",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akhilharihar/Udacity-Item-Catalog.git"
+  },
+  "author": "Akhil Harihar",
+  "bugs": {
+    "url": "https://github.com/akhilharihar/Udacity-Item-Catalog/issues"
+  },
+  "homepage": "https://github.com/akhilharihar/Udacity-Item-Catalog#readme",
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "laravel-mix": "^4.0.15"
+  }
+}
