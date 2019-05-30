@@ -1,0 +1,12 @@
+# nginx configuration
+server {
+	passenger_python "/path/to/python3";
+	
+	listen 80;
+	server_name "example.com";
+
+	# Tell Nginx and Passenger where your app's 'public' directory is
+	root "path/to/project/dir/public";
+
+	passenger_enabled on;
+}
