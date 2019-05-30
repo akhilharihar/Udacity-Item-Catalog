@@ -3,6 +3,7 @@ from flask.wrappers import Request as Req
 from werkzeug.utils import cached_property
 from werkzeug.datastructures import MultiDict, CombinedMultiDict
 from .csrf import csrf
+from .jinja_filters import installed_filters
 
 
 __all__ = ['Application']
@@ -55,6 +56,10 @@ class Application(Flask, FlaskHelpers):
 
         """Registers csrf protection"""
         csrf.init_app(self)
+
+        """Register jinja filters"""
+        for filter_name, func in installed_filters.items():
+            self.jinja_env.filters[filter_name] = func
 
 
 class Blueprint(BP, FlaskHelpers):
