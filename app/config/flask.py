@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, Blueprint as BP
 from flask.wrappers import Request as Req
 from werkzeug.utils import cached_property
 from werkzeug.datastructures import MultiDict, CombinedMultiDict
@@ -24,7 +24,26 @@ class Request(Req):
         return CombinedMultiDict(args)
 
 
-class Application(Flask):
+class FlaskHelpers:
+    def add_url_rules(self, rules, is_path_instance=True):
+        """
+        Registers a list of URL rules using flask add_url_rule method.
+        params:
+        rules(list): A list of path instances.
+        is_path_instance(bool): if true, adds url rules from path object or
+        directly unpacks the dict object.
+        """
+        if isinstance(rules, list):
+            for rule in rules:
+                if is_path_instance:
+                    self.add_url_rule(**rule.args)
+                else:
+                    self.add_url_rule(**rule)
+        else:
+            raise TypeError('rules must be a list.')
+
+
+class Application(Flask, FlaskHelpers):
     """
     Base Flask Class
     """
@@ -36,3 +55,10 @@ class Application(Flask):
 
         """Registers csrf protection"""
         csrf.init_app(self)
+
+
+class Blueprint(BP, FlaskHelpers):
+    """
+    Base Flask Blueprint class
+    """
+    pass
