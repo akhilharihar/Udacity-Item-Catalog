@@ -18,4 +18,10 @@ def create_app():
     else:
         app.config.from_object(DevelopmentConfig)
 
+    app.add_url_rule('/', 'index', index)
+
     return app
+
+
+def index():
+    return "flask app"
