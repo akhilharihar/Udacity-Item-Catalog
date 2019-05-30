@@ -1,6 +1,6 @@
 from .config.flask import Application
 from settings import BaseConfig, ProductionConfig, DevelopmentConfig
-from .database import db
+from .database import db, migrate
 
 
 def create_app():
@@ -30,6 +30,7 @@ def register_extensions(flask_instance):
     Register flask extensions.
     """
     db.init_app(flask_instance)
+    migrate.migrations.init_app(flask_instance, db)
 
 
 def index():
