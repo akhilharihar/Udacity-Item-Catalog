@@ -2,6 +2,7 @@ from .config.flask import Application
 from settings import static_file_url
 from settings import BaseConfig, ProductionConfig, DevelopmentConfig
 from .database import db, migrate
+from .auth import login_manager
 
 
 def create_app():
@@ -35,6 +36,7 @@ def register_extensions(flask_instance):
     """
     db.init_app(flask_instance)
     migrate.migrations.init_app(flask_instance, db)
+    login_manager.init_app(flask_instance)
 
 
 def register_blueprints(flask_instance):
