@@ -1,5 +1,5 @@
 from flask import request
-from app.utils.response import render, response, json_response
+from app.utils import render, response, json_response
 
 
 http_error_status_codes = [400, 401, 403, 404, 405, 500, 503]
@@ -32,5 +32,17 @@ class BaseError:
         if self.is_json:
             return json_response(error, self.status_code)
 
-        return response(render('errors/error.html', error=error),
+        return response(render('errors/http_error.html', error=error),
                         self.status_code)
+
+
+def url_404():
+    error = dict(
+        code=404,
+        message='We couldn\'t find the page you are looking for.'
+    )
+    return response(render('errors/http_error.html', error=error), 404)
+
+
+def url_503():
+    return response(render('errors/http_503.html'), 503)

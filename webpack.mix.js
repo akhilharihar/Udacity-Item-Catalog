@@ -7,10 +7,12 @@ let mix = require('laravel-mix');
  */
 
 mix.disableNotifications();
-mix.setPublicPath('public');
 
 if (process.env.FLASK_ENV == 'development') {
     mix.sourceMaps(); // Enable sourcemaps
+    mix.setPublicPath('app/static');
+} else {
+    mix.setPublicPath('public');
 }
 
 /*
@@ -18,3 +20,5 @@ if (process.env.FLASK_ENV == 'development') {
  | Mix Asset Management
  |--------------------------------------------------------------------------
  */
+
+mix.sass('app/resources/sass/auth.scss', 'css');
