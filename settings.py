@@ -1,6 +1,9 @@
 import os
+from dotenv import load_dotenv
 
 __all__ = ['BASE_DIR', 'BaseConfig', 'ProductionConfig', 'DevelopmentConfig']
+
+load_dotenv()  # load environmental variables
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
