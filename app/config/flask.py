@@ -4,7 +4,7 @@ from werkzeug.utils import cached_property
 from werkzeug.datastructures import MultiDict, CombinedMultiDict
 from .csrf import csrf
 from .jinja_filters import installed_filters
-from .errors import http_error_status_codes, BaseError
+from .errors import http_error_status_codes, BaseError, url_404, url_503
 
 
 class Request(Req):
@@ -63,6 +63,9 @@ class Application(Flask, FlaskHelpers):
         error_fn = BaseError()
         for error_code in http_error_status_codes:
             self.register_error_handler(error_code, error_fn)
+
+        self.add_url_rule('/404', '404', url_404)
+        self.add_url_rule('/504', '503', url_503)
 
 
 class Blueprint(BP, FlaskHelpers):

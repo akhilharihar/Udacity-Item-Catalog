@@ -34,3 +34,15 @@ class BaseError:
 
         return response(render('errors/http_error.html', error=error),
                         self.status_code)
+
+
+def url_404():
+    error = dict(
+        code=404,
+        message='We couldn\'t find the page you are looking for.'
+    )
+    return response(render('errors/http_error.html', error=error), 404)
+
+
+def url_503():
+    return response(render('errors/http_503.html'), 503)
