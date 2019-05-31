@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block page_title %}{% endblock page_title %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
+    {% block header %}
+    {% endblock header %}
+</head>
+
+<body>
+    <div class="container content">
+        <div class="wrapper">
+            {% include 'errors/form_error.html' %}
+
+
+            {% with messages = get_flashed_messages(with_categories=True, category_filter=['success', 'login_info']) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="form-info notification-session">
+                            <div class="notification {{'is-primary' if category == 'success' else 'is-warning'}}">
+                                <button class="delete" onclick="this.parentElement.parentElement.remove();"></button>
+                                <p>{{ message }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+    {% block footer %}
+    {% endblock footer %}
+</body>
+
+</html>

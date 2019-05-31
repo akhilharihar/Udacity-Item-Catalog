@@ -3,6 +3,7 @@ from settings import static_file_url
 from settings import BaseConfig, ProductionConfig, DevelopmentConfig
 from .database import db, migrate
 from .auth import login_manager
+from .routes import url_rules
 
 
 def create_app():
@@ -25,6 +26,7 @@ def create_app():
 
     register_extensions(app)
 
+    app.add_url_rules(url_rules)
     register_blueprints(app)
 
     return app

@@ -20,3 +20,5 @@ if (process.env.FLASK_ENV == 'development') {
  | Mix Asset Management
  |--------------------------------------------------------------------------
  */
+
+mix.sass('app/resources/sass/auth.scss', 'css');

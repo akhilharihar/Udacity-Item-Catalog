@@ -1,0 +1,39 @@
+{% extends "auth/template.html" %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <p class="card-header-title">Sign in</p>
+    </div>
+
+    <div class="card-content">
+        <form class="form" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <div class="field">
+                <label class="label">Email Address</label>
+                <div class="control">
+                    <input class="input" name="email_id" type="email" placeholder="john@example.com" required>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Password</label>
+                <div class="control">
+                    <input class="input" name="password" type="password" placeholder="password" required>
+                </div>
+            </div>
+            <div class="field">
+                <label class="checkbox">
+                    <input name="remember_me" type="checkbox">
+                    Remember me
+                </label>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-link" type="submit">Login</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
