@@ -3,7 +3,8 @@ from werkzeug.urls import url_parse
 from flask_login import current_user, login_user, login_required, logout_user
 from app.utils import response, render
 from app.forms.auth import LoginForm
-from app.models import User
+from app.models.user import create_oauth_user, User
+from app.auth import installed_auth_providers
 
 
 def failed_login():
@@ -59,3 +60,45 @@ def logout():
     session.clear()
 
     return redirect('/')
+
+
+def login_oauth(name):
+    if name not in installed_auth_providers:
+        return redirect(url_for('404'))
+
+    auth = installed_auth_providers[name]()
+    client = auth.client
+
+    return client.authorize_redirect(auth.redirect_uri)
+
+
+def authorise_oauth(name):
+    if name not in installed_auth_providers:
+        return redirect(url_for('404'))
+
+    if request.args.get('error'):
+        return failed_login()
+
+    auth = installed_auth_providers[name]()
+    client = auth.client
+    token = client.authorize_access_token()
+
+    user_id = auth.user_id
+    internal_user_email = '{}@{}'.format(str(user_id), name)
+
+    user = User.by_email_address(internal_user_email)
+
+    if not user:
+        user = create_oauth_user(user_id, name)
+
+    if not user:
+        flash('Cannot create your account. Please try again after some time.',
+              'login_info')
+        return failed_login()
+
+    if user.add_or_update_token(name, token):
+        return _login(user, False)
+    else:
+        flash('Cannot create your account. Please try again after some time.',
+              'login_info')
+        return failed_login()

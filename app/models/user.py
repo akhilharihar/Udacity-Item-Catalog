@@ -7,6 +7,8 @@ from itsdangerous import URLSafeSerializer
 from flask import current_app
 from app.utils import AbstractHashID
 from app.auth import login_manager
+from sqlalchemy.ext.hybrid import hybrid_property
+from datetime import datetime, timedelta
 
 
 class User(db.Model, DefaultTableMixin, UserMixin):
@@ -18,6 +20,9 @@ class User(db.Model, DefaultTableMixin, UserMixin):
     password = deferred(db.Column(db.String(240), nullable=False))
     user_status = db.Column(db.Boolean, default=False)
     details = db.relationship('UserDetails', backref='user', lazy=True)
+    token_provider = db.Column(db.String(30), default='local')
+    token = db.relationship('OAuth2Token', backref='user', uselist=False,
+                            lazy=True)
 
     def set_password(self, password):
         """
@@ -64,6 +69,24 @@ class User(db.Model, DefaultTableMixin, UserMixin):
         """
         return _UserDetailsHandler(self, self.details)
 
+    def add_or_update_token(self, name, token):
+        if self.token_provider == 'local' or self.token_provider != name:
+            return False
+
+        if not self.token:
+            self.token = OAuth2Token()
+
+        user_token = self.token
+
+        if token.get('refresh_token'):
+            user_token.refresh_token = token['refresh_token']
+
+        user_token.token_type = token['token_type']
+        user_token.access_token = token['access_token']
+        user_token.expires_at = token['expires_in']
+
+        return self.commit_changes()
+
 
 class UserDetails(db.Model, DefaultTableMixin):
     """
@@ -75,6 +98,45 @@ class UserDetails(db.Model, DefaultTableMixin):
                         nullable=False)
     key = db.Column(db.String(240), nullable=False)
     value = db.Column(db.String(240), default=None)
+
+
+class OAuth2Token(db.Model, DefaultTableMixin):
+    """
+    User Oauth2 tokens
+    """
+    __tablename__ = 'oauth2_tokens'
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey('users.id', ondelete='CASCADE'),
+                        nullable=False, unique=True)
+    token_type = db.Column(db.String(50))
+    access_token = db.Column(db.String(240), nullable=False)
+    refresh_token = db.Column(db.String(240))
+    _expires_at = db.Column(db.DateTime, nullable=False)
+
+    def to_token(self):
+        """
+        Get user token.
+        rtype: dict
+        """
+        return {
+            'access_token': self.access_token,
+            'token_type': self.token_type,
+            'refresh_token': self.refresh_token,
+            'expires_in': int(self.expires_at_in_sec)
+        }
+
+    @hybrid_property
+    def expires_at(self):
+        return self._expires_at
+
+    @expires_at.setter
+    def expires_at(self, in_seconds=0):
+        expires_in = int(in_seconds)
+        self._expires_at = datetime.utcnow() + timedelta(seconds=expires_in)
+
+    @property
+    def expires_at_in_sec(self):
+        return (datetime.utcnow() - self.expires_at).seconds
 
 
 class _UserDetailsHandler():
@@ -146,3 +208,22 @@ def load_user(user_id):
         return User.get(user[0])
     except Exception:
         return None
+
+
+def create_oauth_user(user_id, name):
+    """
+    Create a new oauth user
+    """
+    user_email = '{}@{}'.format(str(user_id), name)
+    new_user = User(email=user_email, user_status=True, token_provider=name)
+    new_user.set_random_password()
+
+    db.session.add(new_user)
+
+    try:
+        db.session.commit()
+        return new_user
+    except Exception as e:
+        db.session.rollback()
+        print(e)
+        return False
