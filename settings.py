@@ -12,7 +12,8 @@ def static_file_url():
     if os.getenv('FLASK_ENV', 'production') == 'development':
         return '/static'
     else:
-        return '/'
+        url_path = os.getenv('STATIC_URL_PATH', '/static')
+        return url_path
 
 
 class BaseConfig:
@@ -23,6 +24,7 @@ class BaseConfig:
     SERVER_NAME = os.getenv('SERVER_NAME')
     SQLALCHEMY_DATABASE_URI = os.getenv('DB_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    USERS_SALT = os.getenv('USERS_SALT')
 
 
 class ProductionConfig:
