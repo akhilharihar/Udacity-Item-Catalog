@@ -1,6 +1,6 @@
 from .urls import Path
-from .response import render, render_template, json_response
+from .responses import render, response, json_response
 from .hashes import Hashes, AbstractHashID
 
-__all__ = ['Path', 'render', 'render_template', 'json_response', 'Hashes',
+__all__ = ['Path', 'render', 'response', 'json_response', 'Hashes',
            'AbstractHashID']
