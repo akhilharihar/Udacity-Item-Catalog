@@ -8,6 +8,13 @@ load_dotenv()  # load environmental variables
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
+def static_file_url():
+    if os.getenv('FLASK_ENV', 'production') == 'development':
+        return '/static'
+    else:
+        return '/'
+
+
 class BaseConfig:
     """
     Default flask instance configuration.

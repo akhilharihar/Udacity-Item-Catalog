@@ -1,4 +1,5 @@
 from .config.flask import Application
+from settings import static_file_url
 from settings import BaseConfig, ProductionConfig, DevelopmentConfig
 from .database import db, migrate
 
@@ -10,7 +11,9 @@ def create_app():
     params:
     config (dict): Custom app configuration.
     """
-    app = Application(__name__)
+    static_url = static_file_url()
+
+    app = Application(__name__, static_url_path=static_url)
 
     app.config.from_object(BaseConfig)
 
@@ -20,7 +23,8 @@ def create_app():
         app.config.from_object(DevelopmentConfig)
 
     register_extensions(app)
-    app.add_url_rule('/', 'index', index)
+
+    register_blueprints(app)
 
     return app
 
@@ -33,5 +37,5 @@ def register_extensions(flask_instance):
     migrate.migrations.init_app(flask_instance, db)
 
 
-def index():
-    return "flask app"
+def register_blueprints(flask_instance):
+    pass
