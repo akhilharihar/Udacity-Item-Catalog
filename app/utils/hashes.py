@@ -72,7 +72,7 @@ class AbstractHashID(ABC):
         """
         set class hashes with secret and min length.
         """
-        return Hashes(str(cls.secret), int(cls.min_length))
+        return Hashes(str(cls.salt), int(cls.min_length))
 
     @classmethod
     def encode(cls, value):
