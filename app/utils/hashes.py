@@ -49,24 +49,30 @@ class AbstractHashID(ABC):
     implemented.
     """
 
-    @staticmethod
-    def hash_provider(secret, length):
-        """
-        Return Hashid instance. There's no need to call this method as this is
-        directly called by the below hash method.
-        """
-
-        return Hashes(salt=secret, min_length=length)
-
-    @classmethod
+    @property
     @abstractmethod
-    def hash(cls):
+    def salt(self):
         """
-        Abstract class method. Should return the above hash_provider method.
+        Random string to make obfuscated data unique.
 
-        eg: return cls.hash_provider('Z8e9ZBebzy', 5)
+        eg: return 'liwordofs'
         """
         pass
+
+    @property
+    @abstractmethod
+    def min_length(self):
+        """
+        Single digit integer.
+        """
+        pass
+
+    @classmethod
+    def hash(cls):
+        """
+        set class hashes with secret and min length.
+        """
+        return Hashes(str(cls.secret), int(cls.min_length))
 
     @classmethod
     def encode(cls, value):
@@ -84,7 +90,7 @@ class AbstractHashID(ABC):
 
         unhashed_tuple = cls.hash().decode(value)
 
-        if len(unhashed_tuple):
+        if not len(unhashed_tuple):
             abort(404)
 
         return unhashed_tuple[0]
