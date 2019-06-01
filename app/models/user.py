@@ -1,10 +1,10 @@
+from os import getenv
 from app.database import db, DefaultTableMixin
 from flask_login import UserMixin
 from sqlalchemy.orm import deferred
 from werkzeug.security import generate_password_hash, check_password_hash
 from uuid import uuid4
 from itsdangerous import URLSafeSerializer
-from flask import current_app
 from app.utils import AbstractHashID
 from app.auth import login_manager
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -23,6 +23,13 @@ class User(db.Model, DefaultTableMixin, UserMixin):
     token_provider = db.Column(db.String(30), default='local')
     token = db.relationship('OAuth2Token', backref='user', uselist=False,
                             lazy=True)
+
+    def __repr__(self):
+        return "<User {}>".format(self.email)
+
+    @property
+    def hash_id(self):
+        return UserIDHash.encode(self.id)
 
     def set_password(self, password):
         """
@@ -54,7 +61,7 @@ class User(db.Model, DefaultTableMixin, UserMixin):
         """
         obfuscated user info generated with user id and password.
         """
-        s = URLSafeSerializer(current_app.config['USERS_SALT'])
+        s = URLSafeSerializer(getenv('USERS_SALT'))
         return str(s.dumps([self.id, self.password]))
 
     @classmethod
@@ -193,16 +200,13 @@ class _UserDetailsHandler():
 
 
 class UserIDHash(AbstractHashID):
-
-    @classmethod
-    def hash(cls):
-        secret = current_app.config['USERS_SALT']
-        return cls.hash_provider(secret, 7)
+    salt = getenv('USERS_SALT')
+    min_length = 7
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    s = URLSafeSerializer(current_app.config['USERS_SALT'])
+    s = URLSafeSerializer(getenv('USERS_SALT'))
     try:
         user = s.loads(user_id)
         return User.get(user[0])
