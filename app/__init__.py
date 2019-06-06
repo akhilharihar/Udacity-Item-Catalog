@@ -4,6 +4,7 @@ from settings import BaseConfig, ProductionConfig, DevelopmentConfig
 from .database import db, migrate
 from .auth import login_manager, oauth
 from .routes import url_rules
+from api import api
 from catalog import catalog_application
 
 
@@ -27,6 +28,7 @@ def create_app():
 
     register_extensions(app)
 
+    app.register_blueprint(api)
     app.add_url_rules(url_rules)
     register_blueprints(app)
 
