@@ -1,6 +1,8 @@
 from os import getenv
 from app.database import db, DefaultTableMixin
 from app.utils import AbstractHashID
+from sqlalchemy.ext.hybrid import hybrid_property
+from bleach import clean
 
 
 class Category(db.Model, DefaultTableMixin):
@@ -13,13 +15,16 @@ class Category(db.Model, DefaultTableMixin):
 
     @property
     def hash_id(self):
-        return CategoryHash.encode(self.id)
+        if self.id:
+            return CategoryHash.encode(self.id)
+        else:
+            return None
 
 
 class Item(db.Model, DefaultTableMixin):
     __tablename__ = 'items'
     name = db.Column(db.String(250), nullable=False, unique=True)
-    description = db.deferred(db.Column(db.Text, default=None))
+    _description = db.deferred(db.Column(db.Text, default=None))
     category_id = db.Column(db.Integer,
                             db.ForeignKey('categories.id', ondelete='CASCADE'),
                             nullable=False)
@@ -27,9 +32,29 @@ class Item(db.Model, DefaultTableMixin):
     def __repr__(self):
         return "<Item {}>".format(self.name)
 
+    @hybrid_property
+    def description(self):
+        return self._description
+
+    @description.setter
+    def description(self, data):
+        allowed_tags = ['h3', 'h4', 'h5', 'h6', 'p', 'br', 'hr', 'strong',
+                        'em', 's', 'u', 'ul', 'li', 'ol']
+        allowed_attr = {
+            '*': ['style']
+        }
+        allowed_styles = ['color']
+
+        self._description = clean(data, tags=allowed_tags,
+                                  attributes=allowed_attr,
+                                  styles=allowed_styles)
+
     @property
     def hash_id(self):
-        return ItemHash.encode(self.id)
+        if self.id:
+            return ItemHash.encode(self.id)
+        else:
+            return None
 
 
 class CategoryHash(AbstractHashID):
