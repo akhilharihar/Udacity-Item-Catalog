@@ -29,7 +29,10 @@ class User(db.Model, DefaultTableMixin, UserMixin):
 
     @property
     def hash_id(self):
-        return UserIDHash.encode(self.id)
+        if self.id:
+            return UserIDHash.encode(self.id)
+        else:
+            return None
 
     def set_password(self, password):
         """
