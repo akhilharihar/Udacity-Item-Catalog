@@ -3,7 +3,7 @@ from flask.wrappers import Request as Req
 from werkzeug.utils import cached_property
 from werkzeug.datastructures import MultiDict, CombinedMultiDict
 from .csrf import csrf
-from .jinja_filters import installed_filters
+from .jinja_env import installed_filters, installed_tags
 from .errors import http_error_status_codes, BaseError, url_404, url_503
 from .route import Path, Resource
 
@@ -53,8 +53,9 @@ class FlaskHelpers:
 
 def modify_trailing_slash():
     rp = request.path
+    qs = request.query_string
     if rp != '/' and rp.endswith('/'):
-        return redirect(rp[:-1])
+        return redirect(rp[:-1] + '?' + str(qs, 'utf-8'))
 
 
 class Application(Flask, FlaskHelpers):
@@ -76,9 +77,12 @@ class Application(Flask, FlaskHelpers):
 
         self.before_request_funcs[None].append(modify_trailing_slash)
 
-        """Register jinja filters"""
+        """Jinja configuration"""
         for filter_name, func in installed_filters.items():
             self.jinja_env.filters[filter_name] = func
+
+        for tag_name, func in installed_tags.items():
+            self.jinja_env.globals[tag_name] = func
 
         """Register custom error handlers for flask application."""
         error_fn = BaseError()
