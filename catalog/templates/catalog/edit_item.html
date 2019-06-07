@@ -1,0 +1,190 @@
+{% extends 'catalog/templates/base.html' %}
+
+{% block header %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pell/1.0.6/pell.min.css" />
+<style>
+    #message_container {
+        margin-bottom: 1rem;
+    }
+
+    .hide_error_messages {
+        display: none;
+    }
+
+</style>
+{% endblock header %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-content">
+        <div class="level">
+            <div class="level-left">
+                <p class="subtitle">Add New Item</p>
+            </div>
+            <div class="level-right">
+                <a href="{{ url('catalog.show_item', item_id=item['id']) }}">&larr; go back</a>
+            </div>
+        </div>
+        
+        <hr>
+        
+        {% include 'success_message.html' %}
+        {% include 'errors/form_error.html' %}
+        
+        <div id="message_container"></div>
+        <form method="POST" name="add_new_item" id="item_form" action="{{ url('catalog.edit_item', item_id=item['id']) }}" autocomplete="off">
+            <input type="hidden" name='_method' value='PUT'>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <div class="field">
+                <label class="label">Name</label>
+                <div class="control">
+                    <input class="input" name="name" type="text" value="{{ item['name'] }}" placeholder="Item Name">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Subject</label>
+                <div class="control">
+                    <div class="select">
+                        <select name="category_id">
+                            <option value=''>Category</option>
+                            {% for category in categories %}
+                            <option value="{{ category['id'] }}" {{ 'selected = true' if category['id'] == item['category_id'] }}>{{ category['name'] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Description</label>
+                <div class="control">
+                    <div id="editor"></div>
+                </div>
+            </div>
+
+            <input type="hidden" name="description" value='{{ item["description"] }}'/>
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <button class="button is-warning" type="reset">Reset</button>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <button class="button is-link" type="submit">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block footer %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pell/1.0.6/pell.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/1.0.10/purify.min.js"></script>
+
+<script>
+    const des_editor = document.getElementById('editor');
+    const new_item_form = document.forms.add_new_item;
+    const edit_mode = true;
+
+    const editor = pell.init({
+        element: des_editor,
+        onChange: html => {
+            new_item_form.elements.description.value = html;
+        },
+        defaultParagraphSeparator: 'p',
+        styleWithCSS: false,
+        actions: [
+            'bold', 'italic', 'underline', 'strikethrough', 'heading1', 'heading2', 'paragraph', 'quote',
+            'olist', 'ulist', 'code', 'line'
+        ],
+        classes: {
+            actionbar: 'pell-actionbar',
+            button: 'pell-button',
+            content: 'pell-content content textarea',
+            selected: 'pell-button-selected'
+        }
+    });
+
+    des_editor.addEventListener('paste', e => {
+        e.stopPropagation();
+        e.preventDefault();
+        let clipboardData = e.clipboardData || window.clipboardData;
+        let purified_data = DOMPurify.sanitize(clipboardData.getData('text'), {
+            ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'br', 'hr', 'strong', 'b', 'i', 'u', 'strike',
+                'blockquote', 'ol', 'li', 'pre'
+            ]
+        });
+        window.pell.exec('insertText', purified_data);
+        return true;
+    });
+
+    new_item_form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const item_name_validate = /^[a-zA-Z0-9-_() ]*$/;
+        let error_messages = [];
+
+        if (!item_name_validate.test(new_item_form.elements.name.value)) {
+            error_messages.push('Item name should only contain alphabets, integers, "-", "_","(", ")".');
+        }
+
+        if (new_item_form.elements.name.value.length < 3 || new_item_form.elements.name.value.length > 240){
+            error_messages.push('Item name should be between 3 to 240 characters.');
+        }
+
+        if (new_item_form.elements.category_id.value == '') {
+            error_messages.push('Please select a category.');
+        }
+
+        if (new_item_form.elements.description.value.length < 100){
+            error_messages.push('Decription should be atleast 100 characters.');
+        }
+
+        if(error_messages.length > 0){
+            show_error(error_messages);
+            return false;
+        }
+
+        new_item_form.submit();
+
+    });
+
+    function error_messages(state) {
+        let msgs = document.getElementsByClassName('form_error_messages');
+        for (let i = 0; i < msgs.length; i++) {
+            if (state == 'show') {
+                msgs[i].classList.remove('hide_error_messages');
+            } else {
+                msgs[i].classList.add('hide_error_messages');
+            }
+        }
+    }
+
+    function show_error(msgs) {
+        const error_container = document.getElementById('message_container');
+        let message = '',
+            i = 0;
+        for (msg of msgs) {
+            message += msg
+            if (i < msgs.length) {
+                message += '<br>';
+            }
+            i++;
+        }
+
+        let content =
+            `<div class="notification is-warning"><button class="delete" onclick="this.parentElement.parentElement.remove();"></button>${message}</div>`;
+
+        error_container.innerHTML = content;
+    }
+
+    if(edit_mode){
+        editor.content.innerHTML = `{{ item['description']|safe }}`
+    }
+</script>
+
+{% endblock footer %}
