@@ -77,7 +77,7 @@ echo "--------------------------------------------"
 echo
 
 systemctl enable nginx
-ufw enable
+echo "y" | sudo ufw enable
 systemctl enable postgresql
 
 exit 0
