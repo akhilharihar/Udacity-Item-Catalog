@@ -1,11 +1,10 @@
-from .utils import Path
+from .utils import Path, url
 from .controllers import auth_controller
-from flask_login import login_required
+from flask import redirect
 
 
-@login_required
 def index():
-    return 'flask app'
+    return redirect(url('catalog.catalog'))
 
 
 url_rules = [
