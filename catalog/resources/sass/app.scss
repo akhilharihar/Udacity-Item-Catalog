@@ -1,0 +1,37 @@
+.top-navbar, .navbar-menu-collapse {
+    border-bottom: 1px solid rgba(0, 40, 100, 0.12);
+}
+
+.top-navbar .navbar-brand {
+    width: 100%;
+    align-items: center;
+}
+
+.top-navbar-menu {
+    margin-left: auto;
+    display: flex;
+    height: 100%;
+}
+
+.top-navbar-menu .navbar-dropdown {
+    background-color: white;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-top: 2px solid #dbdbdb;
+    box-shadow: 0 8px 8px rgba(10, 10, 10, 0.1);
+    display: none;
+    font-size: 0.875rem;
+    min-width: 100%;
+    position: absolute;
+    top: 100%;
+    left: auto;
+    right: 0;
+    z-index: 20;
+}
+
+.top-navbar-menu .navbar-item.is-active .navbar-dropdown,
+.top-navbar-menu .navbar-item.is-hoverable:hover .navbar-dropdown {
+    display: block;
+}
+
+@import "~bulma/bulma";

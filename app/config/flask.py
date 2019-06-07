@@ -1,10 +1,11 @@
-from flask import Flask, Blueprint as BP
+from flask import Flask, Blueprint as BP, request, redirect
 from flask.wrappers import Request as Req
 from werkzeug.utils import cached_property
 from werkzeug.datastructures import MultiDict, CombinedMultiDict
 from .csrf import csrf
-from .jinja_filters import installed_filters
+from .jinja_env import installed_filters, installed_tags
 from .errors import http_error_status_codes, BaseError, url_404, url_503
+from .route import Path, Resource
 
 
 class Request(Req):
@@ -24,22 +25,37 @@ class Request(Req):
 
 
 class FlaskHelpers:
-    def add_url_rules(self, rules, is_path_instance=True):
+    def add_url_rules(self, rules):
         """
         Registers a list of URL rules using flask add_url_rule method.
         params:
-        rules(list): A list of path instances.
-        is_path_instance(bool): if true, adds url rules from path object or
-        directly unpacks the dict object.
+        rules(list): A list of class Path or class Resource objects or
+        instances.
         """
-        if isinstance(rules, list):
-            for rule in rules:
-                if is_path_instance:
-                    self.add_url_rule(**rule.args)
-                else:
-                    self.add_url_rule(**rule)
-        else:
+        url_rules = []
+
+        if not isinstance(rules, list):
             raise TypeError('rules must be a list.')
+
+        for rule in rules:
+            if isinstance(rule, Resource):
+                for x in rule.urls:
+                    url_rules.append(x)
+            elif isinstance(rule, Path):
+                url_rules.append(rule)
+            else:
+                raise TypeError('The contents of rules should either be an \
+                    instance of Path or Resouce.')
+
+        for rule in url_rules:
+            self.add_url_rule(**rule.args)
+
+
+def modify_trailing_slash():
+    rp = request.path
+    qs = request.query_string
+    if rp != '/' and rp.endswith('/'):
+        return redirect(rp[:-1] + '?' + str(qs, 'utf-8'))
 
 
 class Application(Flask, FlaskHelpers):
@@ -55,9 +71,18 @@ class Application(Flask, FlaskHelpers):
         """Registers csrf protection"""
         csrf.init_app(self)
 
-        """Register jinja filters"""
+        self.url_map.strict_slashes = False
+
+        self.before_request_funcs[None] = []
+
+        self.before_request_funcs[None].append(modify_trailing_slash)
+
+        """Jinja configuration"""
         for filter_name, func in installed_filters.items():
             self.jinja_env.filters[filter_name] = func
+
+        for tag_name, func in installed_tags.items():
+            self.jinja_env.globals[tag_name] = func
 
         """Register custom error handlers for flask application."""
         error_fn = BaseError()

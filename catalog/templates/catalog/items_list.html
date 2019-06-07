@@ -1,0 +1,94 @@
+{% extends 'catalog/templates/base.html' %}
+
+{% block header %}
+<style>
+    .category {
+        border-right: 1px solid #333;
+    }
+</style>
+{% endblock header %}
+
+{% block content %}
+<nav class="navbar-menu-collapse">
+    <div class="container">
+        <div class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a class="button is-primary" href="{{ url('catalog.create_item') }}">
+                        <strong>Add Item</strong>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="section">
+    <div class="container">
+        {% include 'success_message.html' %}
+        {% include 'errors/form_error.html' %}
+        <div class="columns">
+            <div class="column is-one-quarter category">
+                <aside class="menu">
+                    <p class="menu-label">
+                        Categories
+                    </p>
+                    <ul class="menu-list">
+                        <li><a href="{{ url('catalog.catalog') }}">All</a></li>
+                        
+                        {% for category in categories %}
+                        <li><a href="{{ url('catalog.category_items', category_name=category['url_safe_name']) }}"
+                                class="{{ 'is-active' if current_category == category['url_safe_name'] }}">{{ category['name'] }}</a>
+                        </li>
+                        {% endfor %}
+                    
+                    </ul>
+                </aside>
+            </div>
+            <div class="column">
+                <h1 class="title">Items</h1>
+                <h2 class="subtitle is-6">
+                    ({{'Latest' if not current_category else " ".join(current_category.split('_')) }})
+                </h2>
+                <ul>
+                    {% for item in items['data'] %}
+                    <li>
+                        <a href="{{ url('catalog.show_item', item_id=item['id']) }}">{{ item.name }}
+                            {% if not current_category %}
+                            <span class="is-size-7 is-italic has-text-grey">({{ item['category_name'] }})</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <hr>
+
+                {% if current_category %}
+                <nav class="pagination">
+                    <a class="pagination-previous"
+                        href="{{ url('catalog.category_items', category_name=current_category, page=(items['current_page']-1)) }}"
+                        {{ 'disabled' if items['current_page'] <= 1 }}>Previous</a>
+                    <a class="pagination-next"
+                        href="{{ url('catalog.category_items', category_name=current_category, page=(items['current_page']+1)) }}"
+                        {{ 'disabled' if items['current_page'] >= items['total_pages'] }}>Next page</a>
+                </nav>
+                {% else %}
+                <nav class="pagination">
+                    <a class="pagination-previous"
+                        href="{{ url('catalog.catalog', category_name=current_category, page=(items['current_page']-1)) }}"
+                        {{ 'disabled' if items['current_page'] <= 1 }}>Previous</a>
+                    <a class="pagination-next"
+                        href="{{ url('catalog.catalog', category_name=current_category, page=(items['current_page']+1)) }}"
+                        {{ 'disabled' if items['current_page'] >= items['total_pages'] }}>Next page</a>
+                    <ul class="pagination-list">
+                        <li>
+                            <p class="pagination-link">Page: {{ items['current_page'] }}</p>
+                        </li>
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
