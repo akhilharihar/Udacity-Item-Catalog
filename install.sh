@@ -2,7 +2,7 @@
 
 echo
 echo "--------------------------------------------"
-echo "Setup Catalog app environment"
+echo "Install Catalog app dependencies"
 echo "--------------------------------------------"
 echo
 
