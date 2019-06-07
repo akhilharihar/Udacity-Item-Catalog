@@ -38,16 +38,18 @@ class Item(db.Model, DefaultTableMixin):
 
     @description.setter
     def description(self, data):
-        allowed_tags = ['h3', 'h4', 'h5', 'h6', 'p', 'br', 'hr', 'strong',
-                        'em', 's', 'u', 'ul', 'li', 'ol']
+        allowed_tags = ['h1', 'h2', 'h3', 'p', 'br', 'hr', 'strong', 'b',
+                        'i', 'u', 'strike', 'blockquote', 'ol', 'li', 'pre']
         allowed_attr = {
             '*': ['style']
         }
         allowed_styles = ['color']
 
-        self._description = clean(data, tags=allowed_tags,
-                                  attributes=allowed_attr,
-                                  styles=allowed_styles)
+        cleaned = clean(data, tags=allowed_tags,
+                        attributes=allowed_attr,
+                        styles=allowed_styles)
+
+        self._description = cleaned.encode('ascii', 'ignore').decode('ascii')
 
     @property
     def hash_id(self):
