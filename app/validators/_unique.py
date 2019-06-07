@@ -20,7 +20,8 @@ class Unique:
         db_rows = model.query.filter(getattr(model, column) == field.data)
 
         if self.__ignore_id:
-            if db_rows.filter_by(id != self.__ignore_id).count():
+            if db_rows.filter(getattr(model, 'id')
+                              != self.__ignore_id).count():
                 raise ValidationError(self.__message.format(field.label.text))
         else:
             if db_rows.count():
