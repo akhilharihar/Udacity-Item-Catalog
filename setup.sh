@@ -6,7 +6,8 @@ echo "Setup Catalog app environment"
 echo "--------------------------------------------"
 echo
 
-DB_USERNAME="catalog"
+export DEBIAN_FRONTEND=noninteractive
+
 DB_NAME="catalog"
 
 ROOT_UID=0    
@@ -22,24 +23,24 @@ fi
 
 apt-get -qq update & apt-get upgrade
 
-apt-get -qq install -y curl python3 python3-pip apt-transport-https ca-certificates 
+echo
+echo "--------------------------------------------"
+echo "Installing Prerequisites."
+echo "--------------------------------------------"
+echo
 
-apt-get -qq install -y dirmngr gnupg
+apt-get -qq install -y curl apt-transport-https ca-certificates dirmngr gnupg ufw
 
 # Add passenger apt key
 curl -sL "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x561F9B9CAC40B2F7" | sudo apt-key add
 
 sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger stretch main > /etc/apt/sources.list.d/passenger.list'
 
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+
 apt-get -qq update
 
-echo
-echo "--------------------------------------------"
-echo "Installing nginx, passenger."
-echo "--------------------------------------------"
-echo
-
-apt-get -qq install -y nginx ufw libnginx-mod-http-passenger
+apt-get -qq install -y python3 python3-pip nginx libnginx-mod-http-passenger postgresql postgresql-contrib nodejs
 
 if [ ! -f /etc/nginx/modules-enabled/50-mod-http-passenger.conf ]
 then 
@@ -50,19 +51,11 @@ ls /etc/nginx/conf.d/mod-http-passenger.conf
 
 echo
 echo "--------------------------------------------"
-echo "Installing postgresql."
-echo "--------------------------------------------"
-echo
-
-apt-get -qq install -y postgresql postgresql-contrib
-
-echo
-echo "--------------------------------------------"
-echo "Creating databse user - catalog. Please enter a new password on prompt."
+echo "Creating database user - catalog. Please enter a new password for user on prompt."
 echo "--------------------------------------------"
 
-sudo -u postgres createuser -D -A -P $DB_USERNAME
-sudo -u postgres createdb -O $DB_USERNAME $DB_NAME
+sudo -u postgres createuser -D -A -P $USER
+sudo -u postgres createdb -O $USER $DB_NAME
 
 
 echo
@@ -84,7 +77,7 @@ echo "--------------------------------------------"
 echo
 
 systemctl enable nginx
-systemctl enable ufw
+ufw enable
 systemctl enable postgresql
 
 exit 0
