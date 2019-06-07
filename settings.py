@@ -24,7 +24,6 @@ class BaseConfig:
     SERVER_NAME = os.getenv('SERVER_NAME')
     SQLALCHEMY_DATABASE_URI = os.getenv('DB_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    USERS_SALT = os.getenv('USERS_SALT')
 
 
 class ProductionConfig:
