@@ -22,3 +22,5 @@ if (process.env.FLASK_ENV == 'development') {
  */
 
 mix.sass('app/resources/sass/auth.scss', 'css');
+
+mix.sass('catalog/resources/sass/app.scss', 'css');
