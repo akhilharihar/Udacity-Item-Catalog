@@ -61,20 +61,10 @@ class ItemController:
         if return_model:
             return item
 
-        result = dict(
-            id=item.hash_id,
-            name=item.name,
-            description=item.description,
-            category_id=item.category.hash_id,
-            category_name=item.category.name,
-            url_safe_category_name="_".join(item.category.name.split(' ')),
-            created_on=item.created_on.strftime("%B %Y")
-        )
-
-        return result
+        return ItemController.item_to_dict(item)
 
     @staticmethod
-    def store():
+    def store(user_id):
         form = ItemForm()
         if not form.validate():
             return ItemController.message(False, form.errors)
@@ -83,6 +73,7 @@ class ItemController:
         item.name = form.name.data.strip()
         item.description = form.description.data
         item.category_id = CategoryHash.decode(form.category_id.data)
+        item.user_id = user_id
 
         db.session.add(item)
 
@@ -142,3 +133,16 @@ class ItemController:
             'result': result,
             'message': message
         }
+
+    @staticmethod
+    def item_to_dict(item):
+        return dict(
+            id=item.hash_id,
+            name=item.name,
+            description=item.description,
+            category_id=item.category.hash_id,
+            category_name=item.category.name,
+            url_safe_category_name="_".join(item.category.name.split(' ')),
+            created_on=item.created_on.strftime("%B %Y"),
+            user_id=item.user_id
+        )
