@@ -125,33 +125,35 @@
         return true;
     });
 
-    // new_item_form.addEventListener('submit', (e) => {
-    //     e.preventDefault();
-    //     const item_name_validate = /^[a-zA-Z0-9-_() ]*$/;
-    //     let error_messages = [];
+    new_item_form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const item_name_validate = /^[a-zA-Z0-9-_() ]*$/;
+        let error_messages = [];
 
-    //     if (!item_name_validate.test(new_item_form.elements.name.value)) {
-    //         error_messages.push('Item name should only contain alphabets, integers, "-", "_","(", ")".');
-    //     }
+        if (!item_name_validate.test(new_item_form.elements.name.value)) {
+            error_messages.push('Item name should only contain alphabets, integers, "-", "_","(", ")".');
+        }
 
-    //     if (new_item_form.elements.name.value.length < 3 || new_item_form.elements.name.value.length > 240){
-    //         error_messages.push('Item name should be between 3 to 240 characters.');
-    //     }
+        if (new_item_form.elements.name.value.length < 3 || new_item_form.elements.name.value.length > 240){
+            error_messages.push('Item name should be between 3 to 240 characters.');
+        }
 
-    //     if (new_item_form.elements.category_id.value == '') {
-    //         error_messages.push('Please select a category.');
-    //     }
+        if (new_item_form.elements.category_id.value == '') {
+            error_messages.push('Please select a category.');
+        }
 
-    //     if (new_item_form.elements.description.value.length < 100){
-    //         error_messages.push('Decription should be atleast 100 characters.');
-    //     }
+        if (new_item_form.elements.description.value.length < 100){
+            error_messages.push('Decription should be atleast 100 characters.');
+        }
 
-    //     if(error_messages.length > 0){
-    //         show_error(error_messages);
-    //         return false;
-    //     }
+        if(error_messages.length > 0){
+            show_error(error_messages);
+            return false;
+        }
 
-    // });
+        new_item_form.submit();
+
+    });
 
     function error_messages(state) {
         let msgs = document.getElementsByClassName('form_error_messages');
