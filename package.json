@@ -1,7 +1,7 @@
 {
-  "name": "catalog-listing",
-  "version": "0.0.1",
-  "description": "Web application to that providers a list of items within a variety of categories.",
+  "name": "catalog",
+  "version": "1.0.0",
+  "description": "Web application that provides a list of items within a variety of categories.",
   "scripts": {
     "dev": "npm run development",
     "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
