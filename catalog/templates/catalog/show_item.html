@@ -33,8 +33,10 @@
             </div>
             <div class="column">
                 <div class="actions is-pulled-right">
-                    <a class="button is-link" href="{{ url('catalog.edit_item', item_id=item['id']) }}">Edit Item</a>
-                    <a class="button is-warning" id="deleteItem" data-id="{{ item['id'] }}">Delete Item</a>
+                    {% if is_item_owner(current_user, item['user_id']) %}
+                        <a class="button is-link" href="{{ url('catalog.edit_item', item_id=item['id']) }}">Edit Item</a>
+                        <a class="button is-warning" id="deleteItem" data-id="{{ item['id'] }}">Delete Item</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -58,6 +60,7 @@
 {% endblock content %}
 
 {% block footer %}
+{% if is_item_owner(current_user, item['user_id']) %}
 <div class="delete_item_form" style="display: none;">
     <form method="POST" action="{{ url('catalog.delete_item', item_id=item['id']) }}" name='delete_item'>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
@@ -102,4 +105,5 @@
         }
     }
 </script>
+{% endif %}
 {% endblock footer %}

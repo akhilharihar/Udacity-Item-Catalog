@@ -15,69 +15,73 @@
 {% endblock header %}
 
 {% block content %}
+<section class="section">
+    <div class="container">
+        <div class="card">
+            <div class="card-content">
+                <div class="level">
+                    <div class="level-left">
+                        <p class="subtitle">Add New Item</p>
+                    </div>
+                    <div class="level-right">
+                        <a href="{{ url('catalog.catalog') }}">&larr; go back</a>
+                    </div>
+                </div>
 
-<div class="card">
-    <div class="card-content">
-        <div class="level">
-            <div class="level-left">
-                <p class="subtitle">Add New Item</p>
-            </div>
-            <div class="level-right">
-                <a href="{{ url('catalog.catalog') }}">&larr; go back</a>
+                <hr>
+
+                {% include 'success_message.html' %}
+                {% include 'errors/form_error.html' %}
+
+                <div id="message_container"></div>
+                <form autocomplete="off" method="POST" name="add_new_item" id="item_form"
+                    action="{{ url('catalog.create_item') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <div class="field">
+                        <label class="label">Name</label>
+                        <div class="control">
+                            <input class="input" name="name" type="text" placeholder="Item Name">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Subject</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="category_id">
+                                    <option value=''>Category</option>
+                                    {% for category in categories %}
+                                    <option value="{{ category['id'] }}">{{ category['name'] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Description</label>
+                        <div class="control">
+                            <div id="editor"></div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="description" />
+                    <div class="level">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <button class="button is-warning" type="reset">Reset</button>
+                            </div>
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <button class="button is-link" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-        
-        <hr>
-        
-        {% include 'success_message.html' %}
-        {% include 'errors/form_error.html' %}
-        
-        <div id="message_container"></div>
-        <form autocomplete="off" method="POST" name="add_new_item" id="item_form" action="{{ url('catalog.create_item') }}">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-            <div class="field">
-                <label class="label">Name</label>
-                <div class="control">
-                    <input class="input" name="name" type="text" placeholder="Item Name">
-                </div>
-            </div>
-
-            <div class="field">
-                <label class="label">Subject</label>
-                <div class="control">
-                    <div class="select">
-                        <select name="category_id">
-                            <option value=''>Category</option>
-                            {% for category in categories %}
-                            <option value="{{ category['id'] }}">{{ category['name'] }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="field">
-                <label class="label">Description</label>
-                <div class="control">
-                    <div id="editor"></div>
-                </div>
-            </div>
-
-            <input type="hidden" name="description" />
-            <div class="level">
-                <div class="level-left">
-                    <div class="level-item">
-                        <button class="button is-warning" type="reset">Reset</button>
-                    </div>
-                </div>
-                <div class="level-right">
-                    <div class="level-item">
-                        <button class="button is-link" type="submit">Submit</button>
-                    </div>
-                </div>
-            </div>
-        </form>
     </div>
-</div>
+</section>
 
 {% endblock content %}
 

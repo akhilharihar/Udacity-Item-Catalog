@@ -9,6 +9,8 @@
 {% endblock header %}
 
 {% block content %}
+
+{% if current_user.is_authenticated %}
 <nav class="navbar-menu-collapse">
     <div class="container">
         <div class="navbar-menu">
@@ -22,6 +24,7 @@
         </div>
     </div>
 </nav>
+{% endif %}
 
 <section class="section">
     <div class="container">
