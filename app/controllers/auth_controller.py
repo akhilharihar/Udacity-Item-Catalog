@@ -4,7 +4,7 @@ from flask_login import current_user, login_user, login_required, logout_user
 from app.utils import response, render
 from app.forms.auth import LoginForm
 from app.models.user import create_oauth_user, User
-from app.auth import installed_auth_providers
+from app.auth import auth_providers
 
 
 def failed_login():
@@ -63,23 +63,23 @@ def logout():
 
 
 def login_oauth(name):
-    if name not in installed_auth_providers:
+    if name not in auth_providers:
         return redirect(url_for('404'))
 
-    auth = installed_auth_providers[name]()
+    auth = auth_providers[name]()
     client = auth.client
 
     return client.authorize_redirect(auth.redirect_uri)
 
 
 def authorise_oauth(name):
-    if name not in installed_auth_providers:
+    if name not in auth_providers:
         return redirect(url_for('404'))
 
     if request.args.get('error'):
         return failed_login()
 
-    auth = installed_auth_providers[name]()
+    auth = auth_providers[name]()
     client = auth.client
     token = client.authorize_access_token()
 
