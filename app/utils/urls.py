@@ -51,7 +51,7 @@ def url_without_trailing_slash(s, _external=False, **values):
     """
     Generate url for an endpoint without trailing slash.
     """
-    ourl = url_for(s, _external=False, **values)
+    ourl = url_for(s, _external=_external, **values)
 
     ourl_parts = list(url_parse(ourl))
 
