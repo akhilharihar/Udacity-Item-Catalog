@@ -5,7 +5,7 @@ from werkzeug.datastructures import MultiDict, CombinedMultiDict
 from .csrf import csrf
 from .jinja_env import installed_filters, installed_tags
 from .errors import http_error_status_codes, BaseError, url_404, url_503
-from .route import Path, Resource
+from app.utils import Path, Resource
 
 
 class Request(Req):
@@ -51,7 +51,10 @@ class FlaskHelpers:
             self.add_url_rule(**rule.args)
 
 
-def modify_trailing_slash():
+def _modify_trailing_slash():
+    """
+    Redirect url with trailing slash to non trailing ones.
+    """
     rp = request.path
     qs = request.query_string
     if rp != '/' and rp.endswith('/'):
@@ -75,7 +78,7 @@ class Application(Flask, FlaskHelpers):
 
         self.before_request_funcs[None] = []
 
-        self.before_request_funcs[None].append(modify_trailing_slash)
+        self.before_request_funcs[None].append(_modify_trailing_slash)
 
         """Jinja configuration"""
         for filter_name, func in installed_filters.items():
