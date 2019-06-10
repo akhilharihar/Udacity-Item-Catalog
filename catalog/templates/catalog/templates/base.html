@@ -27,7 +27,7 @@
 					<div class="navbar-item">
 						<div class="buttons">
 							{% if current_user.is_authenticated %}
-							<form method="POST">
+							<form method="POST" action="{{ url('logout') }}">
 								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 								<button type="submit" class="button">
 									Logout
