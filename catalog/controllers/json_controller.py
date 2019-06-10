@@ -37,4 +37,6 @@ class ItemAPI:
     def get(item_id):
         data = ItemController.get(ItemController.decode_id(item_id))
 
+        data.pop('user_id', None)
+
         return json_response(data)
