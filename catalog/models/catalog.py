@@ -28,6 +28,8 @@ class Item(db.Model, DefaultTableMixin):
     category_id = db.Column(db.Integer,
                             db.ForeignKey('categories.id', ondelete='CASCADE'),
                             nullable=False)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey('users.id', ondelete='CASCADE'))
 
     def __repr__(self):
         return "<Item {}>".format(self.name)
