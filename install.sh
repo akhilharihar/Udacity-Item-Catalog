@@ -8,8 +8,6 @@ echo
 
 export DEBIAN_FRONTEND=noninteractive
 
-DB_NAME="catalog"
-
 ROOT_UID=0    
 E_NOTROOT=87
 
@@ -48,15 +46,6 @@ then
 fi
 
 ls /etc/nginx/conf.d/mod-http-passenger.conf
-
-echo
-echo "--------------------------------------------"
-echo "Creating database user - catalog. Please enter a new password for user on prompt."
-echo "--------------------------------------------"
-
-sudo -u postgres createuser -D -A -P $USER
-sudo -u postgres createdb -O $USER $DB_NAME
-
 
 echo
 echo "--------------------------------------------"
