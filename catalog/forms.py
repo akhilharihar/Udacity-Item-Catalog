@@ -6,6 +6,9 @@ from catalog.models import Category, Item
 
 
 class ItemForm(FlaskForm):
+    """
+    Validate item input data.
+    """
     name = StringField('name',
                        validators=[DataRequired(), Length(3, 240),
                                    Regexp('^[a-zA-Z0-9-_() ]*$',

@@ -4,6 +4,11 @@ from wtforms.validators import ValidationError
 class Exists:
     """
     The field under validation must exist on a given database table column.
+    params:
+    model(class): sqlalchemy database model.
+    column(str): The column name to check if the value exists.
+    message(str): Custom error message. The str part {} is formatted with the
+    input field name.
     """
     def __init__(self, model, column, message=None):
         self.__model = model

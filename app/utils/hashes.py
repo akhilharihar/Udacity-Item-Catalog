@@ -7,8 +7,8 @@ class Hashes():
     """
     Obfuscate integers using hashids.
     params:
-    salt: A random string to make the obfusated output unique.
-    min-length: the minimum length of the obfucted string to be generated
+    salt: A random string to make the obfuscated output unique.
+    min-length: the minimum length of the obfuscated string to be generated
     from an integer.
     """
     def __init__(self, salt, min_length):
@@ -42,11 +42,18 @@ class Hashes():
 
 class AbstractHashID(ABC):
     """
-    Abstract Class to easily obfustate database integer primary keys and
+    Abstract Class to easily obfuscate database integer primary keys and
     vice versa.
 
-    Refer :class: Hashes for more info on how this abstract class is
-    implemented.
+    Methods:
+    encode(int): the integer to be obfuscated. returns type:str
+    decode(str): the string to be de-obfuscated. returns type:int
+
+    Example:
+
+    class Test(AbstractHashID):
+        salt='random_string'
+        min_length=5
     """
 
     @property

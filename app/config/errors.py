@@ -37,6 +37,9 @@ class BaseError:
 
 
 def url_404():
+    """
+    Resouce not found view function.
+    """
     error = dict(
         code=404,
         message='We couldn\'t find the page you are looking for.'
@@ -45,4 +48,7 @@ def url_404():
 
 
 def url_503():
+    """
+    Service unavailable view function
+    """
     return response(render('errors/http_503.html'), 503)

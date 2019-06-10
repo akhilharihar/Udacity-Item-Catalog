@@ -8,10 +8,19 @@ from app.auth import auth_providers
 
 
 def failed_login():
+    """
+    Handle failed login response.
+    """
     return redirect(url_for('login'))
 
 
 def login_form():
+    """
+    Show login form.
+
+    If user is already logged in, they will be redirected to index page.
+    """
+
     if current_user.is_authenticated:
         return redirect(url_for('index'))
 
@@ -43,6 +52,9 @@ def login_form():
 
 
 def _login(user, remember_me):
+    """
+    Login a user.
+    """
     if not login_user(user, remember=remember_me):
         return failed_login()
 
@@ -56,6 +68,9 @@ def _login(user, remember_me):
 
 @login_required
 def logout():
+    """
+    Logout user. This is a post request.
+    """
     logout_user()
     session.clear()
 
@@ -63,6 +78,10 @@ def logout():
 
 
 def login_oauth(name):
+    """
+    Redirect to specific oauth provider for authorisation.
+    """
+
     if name not in auth_providers:
         return redirect(url_for('404'))
 
@@ -73,9 +92,14 @@ def login_oauth(name):
 
 
 def authorise_oauth(name):
+    """
+    Handle authorisation response from oauth providers.
+    """
+
     if name not in auth_providers:
         return redirect(url_for('404'))
 
+    # redirect user to login form if they deny the authorisation.
     if request.args.get('error'):
         return failed_login()
 

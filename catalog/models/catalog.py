@@ -6,6 +6,9 @@ from bleach import clean
 
 
 class Category(db.Model, DefaultTableMixin):
+    """
+    Category model class
+    """
     __tablename__ = 'categories'
     name = db.Column(db.String(100), unique=True, nullable=False)
     items = db.relationship('Item', backref='category', lazy=True)
@@ -22,6 +25,9 @@ class Category(db.Model, DefaultTableMixin):
 
 
 class Item(db.Model, DefaultTableMixin):
+    """
+    Item model class
+    """
     __tablename__ = 'items'
     name = db.Column(db.String(250), nullable=False, unique=True)
     _description = db.deferred(db.Column(db.Text, default=None))

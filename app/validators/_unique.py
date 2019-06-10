@@ -4,6 +4,11 @@ from wtforms.validators import ValidationError
 class Unique:
     """
     The field under validation must be unique on a given database table column.
+    params:
+    model(class): sqlalchemy database model.
+    column(str): The column name to check if the value exists.
+    ignore_id(int): The row id to be ignored for unique check. Can used for
+    validating data on update or patch methods.
     """
     def __init__(self, model, column, ignore_id=None, message=None):
         self.__model = model

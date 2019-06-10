@@ -36,6 +36,9 @@ class DefaultTableMixin:
 
     @staticmethod
     def commit_changes():
+        """
+        helper to commit changes to the database.
+        """
         try:
             database.session.commit()
             return True

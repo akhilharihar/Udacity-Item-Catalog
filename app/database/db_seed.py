@@ -67,5 +67,10 @@ class AbstractSeeder(ABC):
         """
         pass
 
+    @classmethod
+    def run(cls, count=1, stdout=False):
+        self = cls()
+        return self.seed(count, stdout)
+
 
 __all__ = ['AbstractSeeder']

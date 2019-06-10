@@ -80,6 +80,9 @@ class User(db.Model, DefaultTableMixin, UserMixin):
         return _UserDetailsHandler(self, self.details)
 
     def add_or_update_token(self, name, token):
+        """
+        Add or update user token.
+        """
         if self.token_provider == 'local' or self.token_provider != name:
             return False
 
@@ -209,6 +212,9 @@ class UserIDHash(AbstractHashID):
 
 @login_manager.user_loader
 def load_user(user_id):
+    """
+    User loader for flask login.
+    """
     s = URLSafeSerializer(getenv('USERS_SALT'))
     try:
         user = s.loads(user_id)

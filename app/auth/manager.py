@@ -1,7 +1,7 @@
 from flask_login import LoginManager
 
 
-login_manager = LoginManager()
+login_manager = LoginManager()  # login manager
 
 """Login manager Configuration"""
 login_manager.login_view = 'login'

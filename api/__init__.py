@@ -8,4 +8,4 @@ _version = 'v1'
 
 _api_url = '/{}/{}'.format(_namespace, _version)
 
-api = Blueprint('api', __name__, url_prefix=_api_url)
+api = Blueprint('api', __name__, url_prefix=_api_url)  # API Blueprint

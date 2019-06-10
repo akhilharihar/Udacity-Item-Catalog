@@ -5,6 +5,11 @@ class CategoryController:
 
     @staticmethod
     def index():
+        """
+        Get categories.
+
+        rtype: dict
+        """
         db_categories = Category.all()
 
         categories = list()

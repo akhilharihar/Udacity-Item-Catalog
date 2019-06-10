@@ -8,6 +8,16 @@ from app.database import db
 class ItemController:
     @staticmethod
     def index(category_id=None, page=1, per_page=15):
+        """
+        Get items from database. If category_id is not specified, recently
+        added items are returned.
+        params:
+        category_id(int),
+        page(int): current page.
+        per_page(int): results per page.
+
+        rtype: dict.
+        """
         if not category_id:
             db_items = Item.query.order_by(Item.created_on.desc())
         else:
@@ -56,6 +66,9 @@ class ItemController:
 
     @staticmethod
     def get(item_id, return_model=False):
+        """
+        Get item. Return dict if return_model is true
+        """
         item = Item.query.get_or_404(item_id)
 
         if return_model:
@@ -65,6 +78,12 @@ class ItemController:
 
     @staticmethod
     def store(user_id):
+        """
+        Store item to database.
+
+        params:
+        user_id: foreign key that should exists in table users.id
+        """
         form = ItemForm()
         if not form.validate():
             return ItemController.message(False, form.errors)
@@ -85,6 +104,9 @@ class ItemController:
 
     @staticmethod
     def update(item):
+        """
+        Update item details.
+        """
 
         form = ItemForm(id=item.id)
 
@@ -105,6 +127,9 @@ class ItemController:
 
     @staticmethod
     def delete(item):
+        """
+        Delete item from database.
+        """
         name = item.name
         db.session.delete(item)
 
@@ -120,6 +145,9 @@ class ItemController:
 
     @staticmethod
     def decode_id(id):
+        """
+        Deobfuscate item hash id
+        """
         return ItemHash.decode(id)
 
     @staticmethod
@@ -136,6 +164,9 @@ class ItemController:
 
     @staticmethod
     def item_to_dict(item):
+        """
+        Helper to convert item model instance to dict.
+        """
         return dict(
             id=item.hash_id,
             name=item.name,

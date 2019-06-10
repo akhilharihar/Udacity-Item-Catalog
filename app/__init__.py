@@ -46,4 +46,7 @@ def register_extensions(flask_instance):
 
 
 def register_blueprints(flask_instance):
+    """
+    Register blueprints
+    """
     flask_instance.register_blueprint(catalog_application)

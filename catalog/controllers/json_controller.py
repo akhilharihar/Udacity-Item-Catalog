@@ -7,6 +7,9 @@ from flask import request
 class CategoryAPI:
     @staticmethod
     def index():
+        """
+        Get categories.
+        """
         data = CategoryController.index()
         return json_response(data)
 
@@ -14,6 +17,10 @@ class CategoryAPI:
 class ItemAPI:
     @staticmethod
     def index():
+        """
+        Get items form database. If category args is not provided, recently
+        added items is returned.
+        """
         page = 1
         per_page = 25
 
@@ -35,6 +42,9 @@ class ItemAPI:
 
     @staticmethod
     def get(item_id):
+        """
+        Get a specific item
+        """
         data = ItemController.get(ItemController.decode_id(item_id))
 
         data.pop('user_id', None)
