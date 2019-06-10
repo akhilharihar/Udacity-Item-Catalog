@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 export DEBIAN_FRONTEND=noninteractive
 
 ROOT_UID=0    
@@ -13,11 +15,7 @@ then
   exit $E_NOTROOT
 fi
 
-if [ systemctl is-active --quiet postgresql -gt 0 ];
-then
-    echo "Postgres server is offline. Starting postgres"
-    service postgres start
-fi
+service postgres start
 
 echo -n "Create postgres user for $CURRENT_USER (y/n)?"
 

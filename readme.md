@@ -8,7 +8,7 @@ clone on download this repo to your local machine.
 
 To clone, run:
 ```
-https://github.com/akhilharihar/Udacity-Item-Catalog.git
+git clone https://github.com/akhilharihar/Udacity-Item-Catalog.git
 ```
 
 or download the repo from [master.zip](https://github.com/akhilharihar/Udacity-Item-Catalog/archive/master.zip)
@@ -22,6 +22,30 @@ Item catalog is built on top of flask python microframework.
 - pip3
 - Postgresql
 - Nginx + Phusion Passenger Module
+- npm
+```
+
+## Development
+
+Rename .env.example to .env and Fill all the details.
+
+```
+pip install -r requirements
+npm run dev
+```
+
+To serve the app:
+
+```
+flask run
+```
+
+Unfortunately, facebook oauth does not work under http. Workaround is to generate and install a self signed certificate for 127.0.0.1.
+
+to run flask app with ssl
+
+```
+flask run --cert=cert.pem --key=key.pem
 ```
 
 ## Deployment.
